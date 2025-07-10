@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Lead;
 use App\Models\User;
+use App\Models\Organization;
+use App\Models\Team;
 
 class Appointment extends Model
 {
@@ -33,7 +35,7 @@ class Appointment extends Model
 
     protected $casts = [
         'appointment_date' => 'date',
-        'appointment_time' => 'array', // Storing time as string or array based on how it's used
+        'appointment_time' => 'datetime:H:i:s',
         'reminder_sent' => 'boolean',
         'confirmed_by_client' => 'boolean',
     ];
@@ -46,5 +48,15 @@ class Appointment extends Model
     public function salesAgent()
     {
         return $this->belongsTo(User::class, 'sales_agent_id');
+    }
+
+    public function organization()
+    {
+        return $this->belongsTo(Organization::class);
+    }
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
     }
 }

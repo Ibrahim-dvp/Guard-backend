@@ -125,6 +125,22 @@ return new class extends Migration
             $table->primary([$pivotPermission, $pivotRole], 'role_has_permissions_permission_id_role_id_primary');
         });
 
+        // Add user_roles table
+        Schema::create('user_roles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->foreignId('organization_id')->nullable()->constrained('organizations')->onDelete('cascade');
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('cascade');
+            $table->foreignId('assigned_by')->nullable()->constrained('users')->onDelete('set null');
+            $table->timestamps();
+            $table->unique(['user_id', 'role_id', 'organization_id'], 'unique_user_role_org');
+            $table->index('user_id', 'idx_user');
+            $table->index('role_id', 'idx_role');
+            $table->index('organization_id', 'idx_organization');
+            $table->index('team_id', 'idx_team');
+        });
+
         app('cache')
             ->store(config('permission.cache.store') != 'default' ? config('permission.cache.store') : null)
             ->forget(config('permission.cache.key'));
@@ -141,6 +157,7 @@ return new class extends Migration
             throw new \Exception('Error: config/permission.php not found and defaults could not be merged. Please publish the package configuration before proceeding, or drop the tables manually.');
         }
 
+        Schema::dropIfExists('user_roles');
         Schema::drop($tableNames['role_has_permissions']);
         Schema::drop($tableNames['model_has_roles']);
         Schema::drop($tableNames['model_has_permissions']);

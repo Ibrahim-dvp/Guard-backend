@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('uuid', 36)->unique()->nullable(false);
             $table->foreignId('lead_id')->nullable(false)->constrained('leads')->onDelete('cascade');
             $table->foreignId('sales_agent_id')->nullable(false)->constrained('users')->onDelete('cascade');
-
+            $table->foreignId('organization_id')->nullable()->constrained('organizations')->onDelete('cascade');
+            $table->foreignId('team_id')->nullable()->constrained('teams')->onDelete('set null');
             $table->string('title', 255)->nullable(false);
             $table->text('description')->nullable();
             $table->date('appointment_date')->nullable(false);
@@ -24,19 +25,17 @@ return new class extends Migration
             $table->integer('duration_minutes')->default(60);
             $table->string('location', 255)->nullable();
             $table->enum('meeting_type', ['in_person', 'phone', 'video', 'online'])->default('in_person');
-
             $table->enum('status', ['scheduled', 'confirmed', 'completed', 'cancelled', 'rescheduled'])->default('scheduled');
             $table->enum('outcome', ['successful', 'no_show', 'reschedule_requested', 'not_interested', 'follow_up_needed'])->nullable();
             $table->text('outcome_notes')->nullable();
-
             $table->boolean('reminder_sent')->default(false);
             $table->boolean('confirmed_by_client')->default(false);
-
             $table->timestamps();
             $table->softDeletes();
-
             $table->index('lead_id', 'idx_lead');
             $table->index('sales_agent_id', 'idx_agent');
+            $table->index('organization_id', 'idx_organization');
+            $table->index('team_id', 'idx_team');
             $table->index('appointment_date', 'idx_date');
             $table->index('status', 'idx_status');
         });

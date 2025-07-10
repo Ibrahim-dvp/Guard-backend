@@ -11,25 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('organizations', function (Blueprint $table) {
-            $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('name');
-            $table->enum('type', ['protecta_group', 'partner']);
-            $table->string('code', 50)->unique()->nullable();
-            $table->text('address')->nullable();
-            $table->string('phone', 20)->nullable();
-            $table->string('email', 255)->nullable();
-            $table->string('logo', 255)->nullable();
-            $table->json('settings')->nullable();
-            $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
-            $table->timestamps();
-            $table->timestamp('deleted_at')->nullable();
-
-            $table->index('type', 'idx_type');
-            $table->index('code', 'idx_code');
-            $table->index('status', 'idx_status');
-        });
+        // ...existing code...
 
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
@@ -61,6 +43,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('audit_logs');
-        Schema::dropIfExists('organizations');
+        // ...existing code...
     }
 };

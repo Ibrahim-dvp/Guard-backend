@@ -16,19 +16,14 @@ return new class extends Migration
             $table->string('uuid', 36)->unique()->nullable(false);
             $table->foreignId('lead_id')->nullable(false)->constrained('leads')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
-
             $table->string('activity_type', 100)->nullable(false);
             $table->string('title', 255)->nullable(false);
             $table->text('description')->nullable();
             $table->string('outcome', 100)->nullable();
-
             $table->timestamp('activity_date')->nullable(false);
             $table->integer('duration_minutes')->nullable();
-
             $table->json('metadata')->nullable();
-
             $table->timestamps();
-
             $table->index('lead_id', 'idx_lead');
             $table->index('user_id', 'idx_user');
             $table->index('activity_type', 'idx_type');

@@ -8,6 +8,7 @@ use App\Http\Requests\StoreOrganizationRequest;
 use App\Http\Requests\UpdateOrganizationRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
+use App\Helpers\Helper;
 
 class OrganizationController extends Controller
 {
@@ -16,8 +17,9 @@ class OrganizationController extends Controller
      */
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', Organization::class);
         $organizations = Organization::all();
-        return response()->json($organizations);
+        return Helper::jsonResponse(true, 'Organizations retrieved successfully.', 200, $organizations);
     }
 
     /**
@@ -25,10 +27,11 @@ class OrganizationController extends Controller
      */
     public function store(StoreOrganizationRequest $request): JsonResponse
     {
+        $this->authorize('create', Organization::class);
         $validated = $request->validated();
         $validated['uuid'] = Str::uuid()->toString();
         $organization = Organization::create($validated);
-        return response()->json($organization, 201);
+        return Helper::jsonResponse(true, 'Organization created successfully.', 201, $organization);
     }
 
     /**
@@ -36,7 +39,8 @@ class OrganizationController extends Controller
      */
     public function show(Organization $organization): JsonResponse
     {
-        return response()->json($organization);
+        $this->authorize('view', $organization);
+        return Helper::jsonResponse(true, 'Organization retrieved successfully.', 200, $organization);
     }
 
     /**
@@ -44,9 +48,10 @@ class OrganizationController extends Controller
      */
     public function update(UpdateOrganizationRequest $request, Organization $organization): JsonResponse
     {
+        $this->authorize('update', $organization);
         $validated = $request->validated();
         $organization->update($validated);
-        return response()->json($organization);
+        return Helper::jsonResponse(true, 'Organization updated successfully.', 200, $organization);
     }
 
     /**
@@ -54,7 +59,8 @@ class OrganizationController extends Controller
      */
     public function destroy(Organization $organization): JsonResponse
     {
+        $this->authorize('delete', $organization);
         $organization->delete();
-        return response()->json(null, 204);
+        return Helper::jsonResponse(true, 'Organization deleted successfully.', 204, null);
     }
 }
