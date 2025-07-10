@@ -14,26 +14,35 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RoleSeeder::class,
+            // 1. Create organizations first (required by other entities)
             OrganizationSeeder::class,
+
+            // 2. Create admin user (required for role assignment)
+            AdminUserSeeder::class,
+
+            // 3. Setup all permissions and roles (this replaces PermissionSeeder, RoleSeeder, and RolePermissionSeeder)
+            PermissionSetupSeeder::class,
+
+            // 4. Create system settings
             SystemSettingSeeder::class,
-            // Note: LeadSeeder will create Users, Organizations, and Teams if they don't exist.
-            // It also creates data for other related tables (Appointments, LeadActivities, RevenueTracking) implicitly.
+
+            // 5. Create sample data (these will create more users, leads, etc.)
             LeadSeeder::class,
-            // Individual seeders for other tables can be called explicitly if more specific data is needed,
-            // otherwise, LeadSeeder's factory callbacks will handle their creation with relationships.
-            // AppointmentSeeder::class,
-            // NotificationSeeder::class,
-            // LeadActivitySeeder::class,
-            // RevenueTrackingSeeder::class,
+            AppointmentSeeder::class,
+            LeadActivitySeeder::class,
+            NotificationSeeder::class,
+            RevenueTrackingSeeder::class,
         ]);
 
-        // User::factory(10)->create();
-
+        // Create additional test user
         User::factory()->create([
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test@example.com',
         ]);
+
+        $this->command->info('Database seeding completed successfully!');
+        $this->command->info('Admin user: admin@example.com / password');
+        $this->command->info('Test user: test@example.com / password');
     }
 }

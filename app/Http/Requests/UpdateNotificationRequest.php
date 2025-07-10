@@ -21,11 +21,23 @@ class UpdateNotificationRequest extends FormRequest
      */
     public function rules(): array
     {
+        // return [
+        //     'user_id' => ['required', 'exists:users,id'],
+        //     'type'    => ['required', 'string', 'max:255'], // Removed enum constraint as it's not in the migration
+        //     'data'    => ['required', 'json'],
+        //     'read_at' => ['nullable', 'date'],
+        // ];
         return [
-            'user_id' => ['required', 'exists:users,id'],
-            'type'    => ['required', 'string', 'max:255'], // Removed enum constraint as it's not in the migration
-            'data'    => ['required', 'json'],
-            'read_at' => ['nullable', 'date'],
+            'recipient_id' => ['sometimes', 'exists:users,id'],
+            'sender_id'    => ['nullable', 'exists:users,id'],
+            'type'         => ['sometimes', 'string', 'max:100'],
+            'title'        => ['sometimes', 'string', 'max:255'],
+            'message'      => ['sometimes', 'string'],
+            'data'         => ['nullable', 'json'],
+            'channels'     => ['nullable', 'json'],
+            'priority'     => ['nullable', 'in:low,medium,high,urgent'],
+            'status'       => ['nullable', 'in:pending,sent,delivered,failed,read'],
+            'read_at'      => ['nullable', 'date'],
         ];
     }
 }
