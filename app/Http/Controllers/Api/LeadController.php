@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Models\Lead;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreLeadRequest;
 use App\Http\Requests\UpdateLeadRequest;
+use App\Http\Resources\LeadResource;
+use App\Models\Lead;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
-use App\Helpers\Helper;
 
 class LeadController extends Controller
 {
@@ -19,8 +20,16 @@ class LeadController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', Lead::class);
-        $leads = Lead::all();
-        return Helper::jsonResponse(true, 'Leads retrieved successfully.', 200, $leads);
+        $leads = Lead::paginate(15);
+
+        return Helper::jsonResponse(
+            true,
+            'Leads retrieved successfully.',
+            200,
+            LeadResource::collection($leads),
+            true,
+            $leads
+        );
     }
 
     /**
@@ -29,9 +38,14 @@ class LeadController extends Controller
     public function store(StoreLeadRequest $request): JsonResponse
     {
         $this->authorize('create', Lead::class);
-        $validated = $request->validated();
-        $lead = Lead::create($validated);
-        return Helper::jsonResponse(true, 'Lead created successfully.', 201, $lead);
+        $lead = Lead::create($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Lead created successfully.',
+            201,
+            new LeadResource($lead)
+        );
     }
 
     /**
@@ -40,7 +54,13 @@ class LeadController extends Controller
     public function show(Lead $lead): JsonResponse
     {
         $this->authorize('view', $lead);
-        return Helper::jsonResponse(true, 'Lead retrieved successfully.', 200, $lead);
+
+        return Helper::jsonResponse(
+            true,
+            'Lead retrieved successfully.',
+            200,
+            new LeadResource($lead)
+        );
     }
 
     /**
@@ -49,9 +69,14 @@ class LeadController extends Controller
     public function update(UpdateLeadRequest $request, Lead $lead): JsonResponse
     {
         $this->authorize('update', $lead);
-        $validated = $request->validated();
-        $lead->update($validated);
-        return Helper::jsonResponse(true, 'Lead updated successfully.', 200, $lead);
+        $lead->update($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Lead updated successfully.',
+            200,
+            new LeadResource($lead)
+        );
     }
 
     /**
@@ -61,6 +86,8 @@ class LeadController extends Controller
     {
         $this->authorize('delete', $lead);
         $lead->delete();
-        return Helper::jsonResponse(true, 'Lead deleted successfully.', 204, null);
+
+        return Helper::jsonResponse(true, 'Lead deleted successfully.', 204);
     }
 }
+

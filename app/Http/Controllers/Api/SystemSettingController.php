@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Models\SystemSetting;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreSystemSettingRequest;
 use App\Http\Requests\UpdateSystemSettingRequest;
+use App\Http\Resources\SystemSettingResource;
+use App\Models\SystemSetting;
 use Illuminate\Http\JsonResponse;
-use App\Helpers\Helper;
 
 class SystemSettingController extends Controller
 {
@@ -18,8 +20,16 @@ class SystemSettingController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', SystemSetting::class);
-        $systemSettings = SystemSetting::all();
-        return Helper::jsonResponse(true, 'System settings retrieved successfully.', 200, $systemSettings);
+        $systemSettings = SystemSetting::paginate(15);
+
+        return Helper::jsonResponse(
+            true,
+            'System settings retrieved successfully.',
+            200,
+            SystemSettingResource::collection($systemSettings),
+            true,
+            $systemSettings
+        );
     }
 
     /**
@@ -28,9 +38,14 @@ class SystemSettingController extends Controller
     public function store(StoreSystemSettingRequest $request): JsonResponse
     {
         $this->authorize('create', SystemSetting::class);
-        $validated = $request->validated();
-        $systemSetting = SystemSetting::create($validated);
-        return Helper::jsonResponse(true, 'System setting created successfully.', 201, $systemSetting);
+        $systemSetting = SystemSetting::create($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'System setting created successfully.',
+            201,
+            new SystemSettingResource($systemSetting)
+        );
     }
 
     /**
@@ -39,7 +54,13 @@ class SystemSettingController extends Controller
     public function show(SystemSetting $systemSetting): JsonResponse
     {
         $this->authorize('view', $systemSetting);
-        return Helper::jsonResponse(true, 'System setting retrieved successfully.', 200, $systemSetting);
+
+        return Helper::jsonResponse(
+            true,
+            'System setting retrieved successfully.',
+            200,
+            new SystemSettingResource($systemSetting)
+        );
     }
 
     /**
@@ -48,9 +69,14 @@ class SystemSettingController extends Controller
     public function update(UpdateSystemSettingRequest $request, SystemSetting $systemSetting): JsonResponse
     {
         $this->authorize('update', $systemSetting);
-        $validated = $request->validated();
-        $systemSetting->update($validated);
-        return Helper::jsonResponse(true, 'System setting updated successfully.', 200, $systemSetting);
+        $systemSetting->update($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'System setting updated successfully.',
+            200,
+            new SystemSettingResource($systemSetting)
+        );
     }
 
     /**
@@ -60,6 +86,7 @@ class SystemSettingController extends Controller
     {
         $this->authorize('delete', $systemSetting);
         $systemSetting->delete();
-        return Helper::jsonResponse(true, 'System setting deleted successfully.', 204, null);
+
+        return Helper::jsonResponse(true, 'System setting deleted successfully.', 204);
     }
 }

@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Models\Appointment;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreAppointmentRequest;
 use App\Http\Requests\UpdateAppointmentRequest;
+use App\Http\Resources\AppointmentResource;
+use App\Models\Appointment;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
-use App\Helpers\Helper;
 
 class AppointmentController extends Controller
 {
@@ -19,8 +20,16 @@ class AppointmentController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', Appointment::class);
-        $appointments = Appointment::all();
-        return Helper::jsonResponse(true, 'Appointments retrieved successfully.', 200, $appointments);
+        $appointments = Appointment::paginate(15);
+
+        return Helper::jsonResponse(
+            true,
+            'Appointments retrieved successfully.',
+            200,
+            AppointmentResource::collection($appointments),
+            true,
+            $appointments
+        );
     }
 
     /**
@@ -29,9 +38,14 @@ class AppointmentController extends Controller
     public function store(StoreAppointmentRequest $request): JsonResponse
     {
         $this->authorize('create', Appointment::class);
-        $validated = $request->validated();
-        $appointment = Appointment::create($validated);
-        return Helper::jsonResponse(true, 'Appointment created successfully.', 201, $appointment);
+        $appointment = Appointment::create($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Appointment created successfully.',
+            201,
+            new AppointmentResource($appointment)
+        );
     }
 
     /**
@@ -40,7 +54,13 @@ class AppointmentController extends Controller
     public function show(Appointment $appointment): JsonResponse
     {
         $this->authorize('view', $appointment);
-        return Helper::jsonResponse(true, 'Appointment retrieved successfully.', 200, $appointment);
+
+        return Helper::jsonResponse(
+            true,
+            'Appointment retrieved successfully.',
+            200,
+            new AppointmentResource($appointment)
+        );
     }
 
     /**
@@ -49,9 +69,14 @@ class AppointmentController extends Controller
     public function update(UpdateAppointmentRequest $request, Appointment $appointment): JsonResponse
     {
         $this->authorize('update', $appointment);
-        $validated = $request->validated();
-        $appointment->update($validated);
-        return Helper::jsonResponse(true, 'Appointment updated successfully.', 200, $appointment);
+        $appointment->update($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Appointment updated successfully.',
+            200,
+            new AppointmentResource($appointment)
+        );
     }
 
     /**
@@ -61,6 +86,7 @@ class AppointmentController extends Controller
     {
         $this->authorize('delete', $appointment);
         $appointment->delete();
-        return Helper::jsonResponse(true, 'Appointment deleted successfully.', 204, null);
+
+        return Helper::jsonResponse(true, 'Appointment deleted successfully.', 204);
     }
 }

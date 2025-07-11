@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\OrganizationResource;
-use App\Models\Organization;
 use App\Http\Requests\StoreOrganizationRequest;
 use App\Http\Requests\UpdateOrganizationRequest;
+use App\Http\Resources\OrganizationResource;
+use App\Models\Organization;
 use Illuminate\Http\JsonResponse;
 
 class OrganizationController extends Controller
@@ -17,13 +20,16 @@ class OrganizationController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', Organization::class);
-        $organizations = Organization::all();
+        $organizations = Organization::paginate(15);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Organizations retrieved successfully.',
-            'data' => OrganizationResource::collection($organizations),
-        ]);
+        return Helper::jsonResponse(
+            true,
+            'Organizations retrieved successfully.',
+            200,
+            OrganizationResource::collection($organizations),
+            true,
+            $organizations
+        );
     }
 
     /**
@@ -32,14 +38,14 @@ class OrganizationController extends Controller
     public function store(StoreOrganizationRequest $request): JsonResponse
     {
         $this->authorize('create', Organization::class);
-        $validated = $request->validated();
-        $organization = Organization::create($validated);
+        $organization = Organization::create($request->validated());
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Organization created successfully.',
-            'data' => new OrganizationResource($organization),
-        ], 201);
+        return Helper::jsonResponse(
+            status: true,
+            message: 'Organization created successfully.',
+            code: 201,
+            data: new OrganizationResource($organization)
+        );
     }
 
     /**
@@ -49,11 +55,12 @@ class OrganizationController extends Controller
     {
         $this->authorize('view', $organization);
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Organization retrieved successfully.',
-            'data' => new OrganizationResource($organization),
-        ]);
+        return Helper::jsonResponse(
+            true,
+            'Organization retrieved successfully.',
+            200,
+            new OrganizationResource($organization)
+        );
     }
 
     /**
@@ -62,14 +69,14 @@ class OrganizationController extends Controller
     public function update(UpdateOrganizationRequest $request, Organization $organization): JsonResponse
     {
         $this->authorize('update', $organization);
-        $validated = $request->validated();
-        $organization->update($validated);
+        $organization->update($request->validated());
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Organization updated successfully.',
-            'data' => new OrganizationResource($organization),
-        ]);
+        return Helper::jsonResponse(
+            true,
+            'Organization updated successfully.',
+            200,
+            new OrganizationResource($organization)
+        );
     }
 
     /**
@@ -79,10 +86,7 @@ class OrganizationController extends Controller
     {
         $this->authorize('delete', $organization);
         $organization->delete();
-        
-        return response()->json([
-            'status' => true,
-            'message' => 'Organization deleted successfully.',
-        ], 204);
+
+        return Helper::jsonResponse(true, 'Organization deleted successfully.', 204);
     }
 }

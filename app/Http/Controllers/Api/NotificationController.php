@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Models\Notification;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateNotificationRequest;
+use App\Http\Resources\NotificationResource;
+use App\Models\Notification;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
-use App\Helpers\Helper;
 
 class NotificationController extends Controller
 {
@@ -19,8 +20,16 @@ class NotificationController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', Notification::class);
-        $notifications = Notification::all();
-        return Helper::jsonResponse(true, 'Notifications retrieved successfully.', 200, $notifications);
+        $notifications = Notification::paginate(15);
+
+        return Helper::jsonResponse(
+            true,
+            'Notifications retrieved successfully.',
+            200,
+            NotificationResource::collection($notifications),
+            true,
+            $notifications
+        );
     }
 
     /**
@@ -29,9 +38,14 @@ class NotificationController extends Controller
     public function store(StoreNotificationRequest $request): JsonResponse
     {
         $this->authorize('create', Notification::class);
-        $validated = $request->validated();
-        $notification = Notification::create($validated);
-        return Helper::jsonResponse(true, 'Notification created successfully.', 201, $notification);
+        $notification = Notification::create($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Notification created successfully.',
+            201,
+            new NotificationResource($notification)
+        );
     }
 
     /**
@@ -40,7 +54,13 @@ class NotificationController extends Controller
     public function show(Notification $notification): JsonResponse
     {
         $this->authorize('view', $notification);
-        return Helper::jsonResponse(true, 'Notification retrieved successfully.', 200, $notification);
+
+        return Helper::jsonResponse(
+            true,
+            'Notification retrieved successfully.',
+            200,
+            new NotificationResource($notification)
+        );
     }
 
     /**
@@ -49,9 +69,14 @@ class NotificationController extends Controller
     public function update(UpdateNotificationRequest $request, Notification $notification): JsonResponse
     {
         $this->authorize('update', $notification);
-        $validated = $request->validated();
-        $notification->update($validated);
-        return Helper::jsonResponse(true, 'Notification updated successfully.', 200, $notification);
+        $notification->update($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Notification updated successfully.',
+            200,
+            new NotificationResource($notification)
+        );
     }
 
     /**
@@ -61,6 +86,8 @@ class NotificationController extends Controller
     {
         $this->authorize('delete', $notification);
         $notification->delete();
-        return Helper::jsonResponse(true, 'Notification deleted successfully.', 204, null);
+
+        return Helper::jsonResponse(true, 'Notification deleted successfully.', 204);
     }
 }
+

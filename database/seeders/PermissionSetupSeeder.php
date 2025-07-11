@@ -83,6 +83,11 @@ class PermissionSetupSeeder extends Seeder
                 'description' => 'Director with organization management access'
             ],
             [
+                'name' => 'Coordinator',
+                'slug' => 'coordinator',
+                'description' => 'Coordinator for lead distribution and management'
+            ],
+            [
                 'name' => 'Sales Manager',
                 'slug' => 'sales_manager',
                 'description' => 'Sales team manager'

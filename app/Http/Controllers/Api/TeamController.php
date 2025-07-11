@@ -1,15 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
-use App\Models\Team;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Requests\UpdateTeamRequest;
+use App\Http\Resources\TeamResource;
+use App\Models\Team;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Str;
-use App\Helpers\Helper;
 
 class TeamController extends Controller
 {
@@ -19,8 +20,16 @@ class TeamController extends Controller
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', Team::class);
-        $teams = Team::all();
-        return Helper::jsonResponse(true, 'Teams retrieved successfully.', 200, $teams);
+        $teams = Team::paginate(15);
+
+        return Helper::jsonResponse(
+            true,
+            'Teams retrieved successfully.',
+            200,
+            TeamResource::collection($teams),
+            true,
+            $teams
+        );
     }
 
     /**
@@ -29,9 +38,14 @@ class TeamController extends Controller
     public function store(StoreTeamRequest $request): JsonResponse
     {
         $this->authorize('create', Team::class);
-        $validated = $request->validated();
-        $team = Team::create($validated);
-        return Helper::jsonResponse(true, 'Team created successfully.', 201, $team);
+        $team = Team::create($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Team created successfully.',
+            201,
+            new TeamResource($team)
+        );
     }
 
     /**
@@ -40,7 +54,13 @@ class TeamController extends Controller
     public function show(Team $team): JsonResponse
     {
         $this->authorize('view', $team);
-        return Helper::jsonResponse(true, 'Team retrieved successfully.', 200, $team);
+
+        return Helper::jsonResponse(
+            true,
+            'Team retrieved successfully.',
+            200,
+            new TeamResource($team)
+        );
     }
 
     /**
@@ -49,9 +69,14 @@ class TeamController extends Controller
     public function update(UpdateTeamRequest $request, Team $team): JsonResponse
     {
         $this->authorize('update', $team);
-        $validated = $request->validated();
-        $team->update($validated);
-        return Helper::jsonResponse(true, 'Team updated successfully.', 200, $team);
+        $team->update($request->validated());
+
+        return Helper::jsonResponse(
+            true,
+            'Team updated successfully.',
+            200,
+            new TeamResource($team)
+        );
     }
 
     /**
@@ -61,6 +86,7 @@ class TeamController extends Controller
     {
         $this->authorize('delete', $team);
         $team->delete();
-        return Helper::jsonResponse(true, 'Team deleted successfully.', 204, null);
+
+        return Helper::jsonResponse(true, 'Team deleted successfully.', 204);
     }
 }
