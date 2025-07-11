@@ -29,6 +29,7 @@ class AuthController extends Controller
         return Helper::jsonResponse(true, 'User registered successfully.', 201, [
             'user' => $user,
             'token' => $user->createToken('auth_token')->plainTextToken,
+            'role' => $user->getRoleNames()->first(), // Assuming user has a role
         ]);
     }
 
@@ -49,6 +50,7 @@ class AuthController extends Controller
         return Helper::jsonResponse(true, 'Logged in successfully.', 200, [
             'user' => $user,
             'token' => $token,
+            'role' => $user->getRoleNames()->first()
         ]);
     }
 
