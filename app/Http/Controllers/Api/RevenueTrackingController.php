@@ -30,7 +30,6 @@ class RevenueTrackingController extends Controller
     {
         $this->authorize('create', RevenueTracking::class);
         $validated = $request->validated();
-        $validated['uuid'] = Str::uuid()->toString();
         $revenueTracking = RevenueTracking::create($validated);
         return Helper::jsonResponse(true, 'Revenue tracking created successfully.', 201, $revenueTracking);
     }

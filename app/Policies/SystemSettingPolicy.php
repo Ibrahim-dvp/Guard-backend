@@ -13,8 +13,7 @@ class SystemSettingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('view-any SystemSetting');
     }
 
     /**
@@ -22,8 +21,7 @@ class SystemSettingPolicy
      */
     public function view(User $user, SystemSetting $systemSetting): bool
     {
-        return $user->hasPermissionTo('view system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('view SystemSetting');
     }
 
     /**
@@ -31,8 +29,7 @@ class SystemSettingPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('create SystemSetting');
     }
 
     /**
@@ -40,8 +37,7 @@ class SystemSettingPolicy
      */
     public function update(User $user, SystemSetting $systemSetting): bool
     {
-        return $user->hasPermissionTo('update system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('update SystemSetting');
     }
 
     /**
@@ -49,8 +45,7 @@ class SystemSettingPolicy
      */
     public function delete(User $user, SystemSetting $systemSetting): bool
     {
-        return $user->hasPermissionTo('delete system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('delete SystemSetting');
     }
 
     /**
@@ -58,8 +53,7 @@ class SystemSettingPolicy
      */
     public function restore(User $user, SystemSetting $systemSetting): bool
     {
-        return $user->hasPermissionTo('restore system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('restore SystemSetting');
     }
 
     /**
@@ -67,7 +61,6 @@ class SystemSettingPolicy
      */
     public function forceDelete(User $user, SystemSetting $systemSetting): bool
     {
-        return $user->hasPermissionTo('force delete system settings')
-            || $user->hasPermissionTo('manage system settings');
+        return $user->hasPermissionTo('force-delete SystemSetting');
     }
 }

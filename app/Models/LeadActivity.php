@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Lead;
@@ -10,7 +11,7 @@ use App\Models\User;
 class LeadActivity extends Model
 {
     /** @use HasFactory<\Database\Factories\LeadActivityFactory> */
-    use HasFactory;
+    use HasFactory, HasUuid;
 
     protected $fillable = [
         'uuid',

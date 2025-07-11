@@ -13,8 +13,7 @@ class AppointmentPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view appointments')
-            || $user->hasPermissionTo('manage appointments');
+        return $user->hasPermissionTo('view-any Appointment');
     }
 
     /**
@@ -22,8 +21,7 @@ class AppointmentPolicy
      */
     public function view(User $user, Appointment $appointment): bool
     {
-        return $user->hasPermissionTo('view appointments')
-            || $user->hasPermissionTo('manage appointments')
+        return $user->hasPermissionTo('view Appointment')
             || $user->id === $appointment->user_id // The user who created the appointment
             || $user->id === $appointment->lead->assigned_to; // The sales agent assigned to the lead associated with the appointment
     }
@@ -33,8 +31,7 @@ class AppointmentPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create appointments')
-            || $user->hasPermissionTo('manage appointments');
+        return $user->hasPermissionTo('create Appointment');
     }
 
     /**
@@ -42,8 +39,7 @@ class AppointmentPolicy
      */
     public function update(User $user, Appointment $appointment): bool
     {
-        return $user->hasPermissionTo('update appointments')
-            || $user->hasPermissionTo('manage appointments')
+        return $user->hasPermissionTo('update Appointment')
             || $user->id === $appointment->user_id
             || $user->id === $appointment->lead->assigned_to;
     }
@@ -53,8 +49,7 @@ class AppointmentPolicy
      */
     public function delete(User $user, Appointment $appointment): bool
     {
-        return $user->hasPermissionTo('delete appointments')
-            || $user->hasPermissionTo('manage appointments');
+        return $user->hasPermissionTo('delete Appointment');
     }
 
     /**
@@ -62,8 +57,7 @@ class AppointmentPolicy
      */
     public function restore(User $user, Appointment $appointment): bool
     {
-        return $user->hasPermissionTo('restore appointments')
-            || $user->hasPermissionTo('manage appointments');
+        return $user->hasPermissionTo('restore Appointment');
     }
 
     /**
@@ -71,7 +65,6 @@ class AppointmentPolicy
      */
     public function forceDelete(User $user, Appointment $appointment): bool
     {
-        return $user->hasPermissionTo('force delete appointments')
-            || $user->hasPermissionTo('manage appointments');
+        return $user->hasPermissionTo('force-delete Appointment');
     }
 }

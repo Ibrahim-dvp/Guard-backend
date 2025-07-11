@@ -13,8 +13,7 @@ class RevenueTrackingPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking');
+        return $user->hasPermissionTo('view-any RevenueTracking');
     }
 
     /**
@@ -22,8 +21,7 @@ class RevenueTrackingPolicy
      */
     public function view(User $user, RevenueTracking $revenueTracking): bool
     {
-        return $user->hasPermissionTo('view revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking')
+        return $user->hasPermissionTo('view RevenueTracking')
             || $user->id === $revenueTracking->user_id;
     }
 
@@ -32,8 +30,7 @@ class RevenueTrackingPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking');
+        return $user->hasPermissionTo('create RevenueTracking');
     }
 
     /**
@@ -41,8 +38,7 @@ class RevenueTrackingPolicy
      */
     public function update(User $user, RevenueTracking $revenueTracking): bool
     {
-        return $user->hasPermissionTo('update revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking');
+        return $user->hasPermissionTo('update RevenueTracking');
     }
 
     /**
@@ -50,8 +46,7 @@ class RevenueTrackingPolicy
      */
     public function delete(User $user, RevenueTracking $revenueTracking): bool
     {
-        return $user->hasPermissionTo('delete revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking');
+        return $user->hasPermissionTo('delete RevenueTracking');
     }
 
     /**
@@ -59,8 +54,7 @@ class RevenueTrackingPolicy
      */
     public function restore(User $user, RevenueTracking $revenueTracking): bool
     {
-        return $user->hasPermissionTo('restore revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking');
+        return $user->hasPermissionTo('restore RevenueTracking');
     }
 
     /**
@@ -68,7 +62,6 @@ class RevenueTrackingPolicy
      */
     public function forceDelete(User $user, RevenueTracking $revenueTracking): bool
     {
-        return $user->hasPermissionTo('force delete revenue tracking')
-            || $user->hasPermissionTo('manage revenue tracking');
+        return $user->hasPermissionTo('force-delete RevenueTracking');
     }
 }

@@ -13,8 +13,7 @@ class NotificationPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view notifications')
-            || $user->hasPermissionTo('manage notifications');
+        return $user->hasPermissionTo('view-any Notification');
     }
 
     /**
@@ -22,8 +21,7 @@ class NotificationPolicy
      */
     public function view(User $user, Notification $notification): bool
     {
-        return $user->hasPermissionTo('view notifications')
-            || $user->hasPermissionTo('manage notifications')
+        return $user->hasPermissionTo('view Notification')
             || $user->id === $notification->user_id;
     }
 
@@ -32,8 +30,7 @@ class NotificationPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create notifications')
-            || $user->hasPermissionTo('manage notifications');
+        return $user->hasPermissionTo('create Notification');
     }
 
     /**
@@ -41,8 +38,7 @@ class NotificationPolicy
      */
     public function update(User $user, Notification $notification): bool
     {
-        return $user->hasPermissionTo('update notifications')
-            || $user->hasPermissionTo('manage notifications')
+        return $user->hasPermissionTo('update Notification')
             || $user->id === $notification->user_id;
     }
 
@@ -51,8 +47,7 @@ class NotificationPolicy
      */
     public function delete(User $user, Notification $notification): bool
     {
-        return $user->hasPermissionTo('delete notifications')
-            || $user->hasPermissionTo('manage notifications')
+        return $user->hasPermissionTo('delete Notification')
             || $user->id === $notification->user_id;
     }
 
@@ -61,8 +56,7 @@ class NotificationPolicy
      */
     public function restore(User $user, Notification $notification): bool
     {
-        return $user->hasPermissionTo('restore notifications')
-            || $user->hasPermissionTo('manage notifications');
+        return $user->hasPermissionTo('restore Notification');
     }
 
     /**
@@ -70,7 +64,6 @@ class NotificationPolicy
      */
     public function forceDelete(User $user, Notification $notification): bool
     {
-        return $user->hasPermissionTo('force delete notifications')
-            || $user->hasPermissionTo('manage notifications');
+        return $user->hasPermissionTo('force-delete Notification');
     }
 }

@@ -30,7 +30,6 @@ class LeadActivityController extends Controller
     {
         $this->authorize('create', LeadActivity::class);
         $validated = $request->validated();
-        $validated['uuid'] = Str::uuid()->toString();
         $leadActivity = LeadActivity::create($validated);
         return Helper::jsonResponse(true, 'Lead activity created successfully.', 201, $leadActivity);
     }

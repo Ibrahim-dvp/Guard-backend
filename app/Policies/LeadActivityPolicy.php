@@ -13,8 +13,7 @@ class LeadActivityPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view lead activities')
-            || $user->hasPermissionTo('manage lead activities');
+        return $user->hasPermissionTo('view-any LeadActivity');
     }
 
     /**
@@ -22,8 +21,7 @@ class LeadActivityPolicy
      */
     public function view(User $user, LeadActivity $leadActivity): bool
     {
-        return $user->hasPermissionTo('view lead activities')
-            || $user->hasPermissionTo('manage lead activities')
+        return $user->hasPermissionTo('view LeadActivity')
             || $user->id === $leadActivity->user_id // The user who created the activity
             || $user->id === $leadActivity->lead->assigned_to; // The sales agent assigned to the lead associated with the activity
     }
@@ -33,8 +31,7 @@ class LeadActivityPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create lead activities')
-            || $user->hasPermissionTo('manage lead activities');
+        return $user->hasPermissionTo('create LeadActivity');
     }
 
     /**
@@ -42,8 +39,7 @@ class LeadActivityPolicy
      */
     public function update(User $user, LeadActivity $leadActivity): bool
     {
-        return $user->hasPermissionTo('update lead activities')
-            || $user->hasPermissionTo('manage lead activities')
+        return $user->hasPermissionTo('update LeadActivity')
             || $user->id === $leadActivity->user_id
             || $user->id === $leadActivity->lead->assigned_to;
     }
@@ -53,8 +49,7 @@ class LeadActivityPolicy
      */
     public function delete(User $user, LeadActivity $leadActivity): bool
     {
-        return $user->hasPermissionTo('delete lead activities')
-            || $user->hasPermissionTo('manage lead activities');
+        return $user->hasPermissionTo('delete LeadActivity');
     }
 
     /**
@@ -62,8 +57,7 @@ class LeadActivityPolicy
      */
     public function restore(User $user, LeadActivity $leadActivity): bool
     {
-        return $user->hasPermissionTo('restore lead activities')
-            || $user->hasPermissionTo('manage lead activities');
+        return $user->hasPermissionTo('restore LeadActivity');
     }
 
     /**
@@ -71,7 +65,6 @@ class LeadActivityPolicy
      */
     public function forceDelete(User $user, LeadActivity $leadActivity): bool
     {
-        return $user->hasPermissionTo('force delete lead activities')
-            || $user->hasPermissionTo('manage lead activities');
+        return $user->hasPermissionTo('force-delete LeadActivity');
     }
 }

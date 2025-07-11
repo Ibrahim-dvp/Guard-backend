@@ -30,7 +30,6 @@ class NotificationController extends Controller
     {
         $this->authorize('create', Notification::class);
         $validated = $request->validated();
-        $validated['uuid'] = Str::uuid()->toString();
         $notification = Notification::create($validated);
         return Helper::jsonResponse(true, 'Notification created successfully.', 201, $notification);
     }

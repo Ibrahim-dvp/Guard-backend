@@ -30,7 +30,6 @@ class AppointmentController extends Controller
     {
         $this->authorize('create', Appointment::class);
         $validated = $request->validated();
-        $validated['uuid'] = Str::uuid()->toString();
         $appointment = Appointment::create($validated);
         return Helper::jsonResponse(true, 'Appointment created successfully.', 201, $appointment);
     }

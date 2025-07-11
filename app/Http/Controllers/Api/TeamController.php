@@ -30,7 +30,6 @@ class TeamController extends Controller
     {
         $this->authorize('create', Team::class);
         $validated = $request->validated();
-        $validated['uuid'] = Str::uuid()->toString();
         $team = Team::create($validated);
         return Helper::jsonResponse(true, 'Team created successfully.', 201, $team);
     }

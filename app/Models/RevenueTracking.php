@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Lead;
@@ -11,7 +12,7 @@ use App\Models\Organization;
 class RevenueTracking extends Model
 {
     /** @use HasFactory<\Database\Factories\RevenueTrackingFactory> */
-    use HasFactory;
+    use HasFactory, HasUuid;
 
     protected $fillable = [
         'uuid',

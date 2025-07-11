@@ -13,8 +13,7 @@ class TeamPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view teams')
-            || $user->hasPermissionTo('manage teams');
+        return $user->hasPermissionTo('view-any Team');
     }
 
     /**
@@ -22,8 +21,7 @@ class TeamPolicy
      */
     public function view(User $user, Team $team): bool
     {
-        return $user->hasPermissionTo('view teams')
-            || $user->hasPermissionTo('manage teams')
+        return $user->hasPermissionTo('view Team')
             || $user->id === $team->manager_id;
     }
 
@@ -32,8 +30,7 @@ class TeamPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create teams')
-            || $user->hasPermissionTo('manage teams');
+        return $user->hasPermissionTo('create Team');
     }
 
     /**
@@ -41,8 +38,7 @@ class TeamPolicy
      */
     public function update(User $user, Team $team): bool
     {
-        return $user->hasPermissionTo('update teams')
-            || $user->hasPermissionTo('manage teams');
+        return $user->hasPermissionTo('update Team');
     }
 
     /**
@@ -50,8 +46,7 @@ class TeamPolicy
      */
     public function delete(User $user, Team $team): bool
     {
-        return $user->hasPermissionTo('delete teams')
-            || $user->hasPermissionTo('manage teams');
+        return $user->hasPermissionTo('delete Team');
     }
 
     /**
@@ -59,8 +54,7 @@ class TeamPolicy
      */
     public function restore(User $user, Team $team): bool
     {
-        return $user->hasPermissionTo('restore teams')
-            || $user->hasPermissionTo('manage teams');
+        return $user->hasPermissionTo('restore Team');
     }
 
     /**
@@ -68,7 +62,6 @@ class TeamPolicy
      */
     public function forceDelete(User $user, Team $team): bool
     {
-        return $user->hasPermissionTo('force delete teams')
-            || $user->hasPermissionTo('manage teams');
+        return $user->hasPermissionTo('force-delete Team');
     }
 }
