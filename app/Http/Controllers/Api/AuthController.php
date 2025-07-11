@@ -68,21 +68,4 @@ class AuthController extends Controller
     {
         return Helper::jsonResponse(true, 'User data retrieved successfully.', 200, $request->user());
     }
-
-    // Remove resourceful methods as this is for authentication, not a typical CRUD resource.
-    public function index()
-    { /* Not applicable */
-    }
-    public function store(Request $request)
-    { /* Not applicable, handled by register */
-    }
-    public function show(string $id)
-    { /* Not applicable, handled by user() */
-    }
-    public function update(Request $request, string $id)
-    { /* Not applicable */
-    }
-    public function destroy(string $id)
-    { /* Not applicable, handled by logout or specific user deletion logic */
-    }
 }

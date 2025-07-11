@@ -32,79 +32,33 @@ class PermissionSetupSeeder extends Seeder
         $this->command->info('Cleared all existing permissions and roles.');
 
         // Create permissions that EXACTLY match your policies
-        $permissions = [
-            // Organization permissions (from OrganizationPolicy)
-            'view-any Organization',
-            'view Organization',
-            'create Organization',
-            'update Organization',
-            'delete Organization',
-            'restore Organization',
-            'force-delete Organization',
-
-            // Team permissions (from TeamPolicy)
-            'view teams',
-            'create teams',
-            'update teams',
-            'delete teams',
-            'manage teams',
-            'restore teams',
-            'force delete teams',
-
-            // Lead permissions (from LeadPolicy)
-            'view leads',
-            'create leads',
-            'update leads',
-            'delete leads',
-            'manage leads',
-            'restore leads',
-            'force delete leads',
-
-            // Appointment permissions (from AppointmentPolicy)
-            'view appointments',
-            'create appointments',
-            'update appointments',
-            'delete appointments',
-            'manage appointments',
-            'restore appointments',
-            'force delete appointments',
-
-            // Lead Activity permissions (from LeadActivityPolicy)
-            'view lead activities',
-            'create lead activities',
-            'update lead activities',
-            'delete lead activities',
-            'manage lead activities',
-            'restore lead activities',
-            'force delete lead activities',
-
-            // Notification permissions (from NotificationPolicy)
-            'view notifications',
-            'create notifications',
-            'update notifications',
-            'delete notifications',
-            'manage notifications',
-            'restore notifications',
-            'force delete notifications',
-
-            // Revenue Tracking permissions (from RevenueTrackingPolicy)
-            'view revenue tracking',
-            'create revenue tracking',
-            'update revenue tracking',
-            'delete revenue tracking',
-            'manage revenue tracking',
-            'restore revenue tracking',
-            'force delete revenue tracking',
-
-            // System Setting permissions (from SystemSettingPolicy)
-            'view system settings',
-            'create system settings',
-            'update system settings',
-            'delete system settings',
-            'manage system settings',
-            'restore system settings',
-            'force delete system settings',
+        $resources = [
+            'Organization',
+            'Team',
+            'Lead',
+            'Appointment',
+            'LeadActivity',
+            'Notification',
+            'RevenueTracking',
+            'SystemSetting',
         ];
+
+        $actions = [
+            'view-any',
+            'view',
+            'create',
+            'update',
+            'delete',
+            'restore',
+            'force-delete',
+        ];
+
+        $permissions = [];
+        foreach ($resources as $resource) {
+            foreach ($actions as $action) {
+                $permissions[] = "$action $resource";
+            }
+        }
 
         // Create permissions
         foreach ($permissions as $permission) {
@@ -179,53 +133,49 @@ class PermissionSetupSeeder extends Seeder
             'view-any Organization',
             'view Organization',
             'update Organization',
-            'view teams',
-            'create teams',
-            'update teams',
-            'manage teams',
-            'view leads',
-            'create leads',
-            'update leads',
-            'manage leads',
-            'view appointments',
-            'manage appointments',
-            'view revenue tracking',
-            'manage revenue tracking',
+            'view-any Team',
+            'create Team',
+            'update Team',
+            'view-any Lead',
+            'create Lead',
+            'update Lead',
+            'view-any Appointment',
+            'view-any RevenueTracking',
         ]);
 
         $this->assignPermissionsToRole('sales_manager', [
-            'view teams',
-            'view leads',
-            'create leads',
-            'update leads',
-            'view appointments',
-            'create appointments',
-            'update appointments',
-            'view lead activities',
-            'create lead activities',
-            'update lead activities',
-            'view revenue tracking',
-            'view notifications',
+            'view-any Team',
+            'view-any Lead',
+            'create Lead',
+            'update Lead',
+            'view-any Appointment',
+            'create Appointment',
+            'update Appointment',
+            'view-any LeadActivity',
+            'create LeadActivity',
+            'update LeadActivity',
+            'view-any RevenueTracking',
+            'view-any Notification',
         ]);
 
         $this->assignPermissionsToRole('sales_agent', [
-            'view leads',
-            'update leads',
-            'view appointments',
-            'create appointments',
-            'update appointments',
-            'view lead activities',
-            'create lead activities',
-            'update lead activities',
-            'view notifications',
+            'view-any Lead',
+            'update Lead',
+            'view-any Appointment',
+            'create Appointment',
+            'update Appointment',
+            'view-any LeadActivity',
+            'create LeadActivity',
+            'update LeadActivity',
+            'view-any Notification',
         ]);
 
         $this->assignPermissionsToRole('referral', [
-            'view leads',
-            'create leads',
-            'view appointments',
-            'view revenue tracking',
-            'view notifications',
+            'view-any Lead',
+            'create Lead',
+            'view-any Appointment',
+            'view-any RevenueTracking',
+            'view-any Notification',
         ]);
 
         // Assign Admin role to admin user

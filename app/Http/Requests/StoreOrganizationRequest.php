@@ -23,7 +23,7 @@ class StoreOrganizationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'uuid' => ['required', 'string', 'max:36', Rule::unique('organizations', 'uuid')],
+            // 'uuid' => ['required', 'string', 'max:36', Rule::unique('organizations', 'uuid')],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['required', 'string', Rule::in(['protecta_group', 'partner'])],
             'code' => ['nullable', 'string', 'max:50', Rule::unique('organizations', 'code')],

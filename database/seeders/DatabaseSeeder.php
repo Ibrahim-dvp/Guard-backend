@@ -31,7 +31,7 @@ class DatabaseSeeder extends Seeder
             AppointmentSeeder::class,
             LeadActivitySeeder::class,
             NotificationSeeder::class,
-            RevenueTrackingSeeder::class,
+            // RevenueTrackingSeeder::class,
         ]);
 
         // Create additional test user
