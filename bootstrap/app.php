@@ -23,34 +23,61 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->statefulApi();
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
+    ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->renderable(function (Throwable $e, $request) {
             if ($request->is('api/*')) {
-                if ($e instanceof MethodNotAllowedHttpException) {
-                    return response()->json(['message' => 'The specified method is not allowed for this route.'], 405);
-                }
+                $statusCode = match (true) {
+                    $e instanceof MethodNotAllowedHttpException => 405,
+                    $e instanceof AuthenticationException => 401,
+                    $e instanceof ValidationException => 422,
+                    $e instanceof AuthorizationException || $e instanceof AccessDeniedHttpException || $e instanceof UnauthorizedException => 403,
+                    $e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException => 404,
+                    $e instanceof Illuminate\Database\QueryException => 500,
+                    $e instanceof Symfony\Component\HttpKernel\Exception\HttpException => $e->getStatusCode(),
+                    default => 500
+                };
 
-                if ($e instanceof AuthenticationException) {
-                    return response()->json(['message' => 'Unauthenticated.'], 401);
-                }
+                // Custom messages for each exception type
+                $customMessages = [
+                    MethodNotAllowedHttpException::class => 'Method not allowed. Please check the HTTP method.',
+                    AuthenticationException::class => 'Authentication required. Please login.',
+                    ValidationException::class => 'Validation failed. Please check your input.',
+                    AuthorizationException::class => 'You do not have permission to perform this action.',
+                    AccessDeniedHttpException::class => 'Access denied. You do not have permission.',
+                    UnauthorizedException::class => 'Unauthorized. Permission denied.',
+                    ModelNotFoundException::class => 'Resource not found.',
+                    NotFoundHttpException::class => 'Endpoint not found.',
+                    Illuminate\Database\QueryException::class => 'A database error occurred. Please contact support.',
+                    Symfony\Component\HttpKernel\Exception\HttpException::class => $e->getMessage() ?: 'HTTP error occurred.',
+                ];
+
+                $message = $customMessages[get_class($e)] ?? ($statusCode === 500 ? 'Server error. Please try again later.' : $e->getMessage());
+
+                $response = [
+                    'status' => false,
+                    'message' => $message,
+                    'code' => $statusCode,
+                ];
 
                 if ($e instanceof ValidationException) {
-                    return response()->json([
-                        'message' => 'The given data was invalid.',
-                        'errors' => $e->errors(),
-                    ], 422);
+                    $response['errors'] = $e->errors();
+                }
+                if ($e instanceof Illuminate\Database\QueryException) {
+                    $response['sql'] = $e->getSql();
+                    $response['bindings'] = $e->getBindings();
                 }
 
-                if ($e instanceof AccessDeniedHttpException || $e instanceof AuthorizationException || $e instanceof UnauthorizedException) {
-                    return response()->json(['message' => 'You do not have the required permissions to perform this action.'], 403);
+                // For debugging in non-production environments
+                if (config('app.debug')) {
+                    $response['debug'] = [
+                        'exception' => get_class($e),
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => collect($e->getTrace())->take(5)->all(),
+                    ];
                 }
 
-                if ($e instanceof ModelNotFoundException || $e instanceof NotFoundHttpException) {
-                    return response()->json(['message' => 'The requested resource was not found.'], 404);
-                }
-
-                // Generic server error
-                return response()->json(['message' => 'A server error occurred. Please try again later.'], 500);
+                return response()->json($response, $statusCode);
             }
         });
     })->create();

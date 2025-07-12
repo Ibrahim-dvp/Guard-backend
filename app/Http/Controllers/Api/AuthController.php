@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 use App\Helpers\Helper;
 use Illuminate\Http\Request;
 
+use App\Http\Resources\UserResource;
+
 class AuthController extends Controller
 {
     /**
@@ -27,9 +29,8 @@ class AuthController extends Controller
         $user = User::create($validated);
 
         return Helper::jsonResponse(true, 'User registered successfully.', 201, [
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $user->createToken('auth_token')->plainTextToken,
-            'role' => $user->getRoleNames()->first(), // Assuming user has a role
         ]);
     }
 
@@ -48,9 +49,8 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return Helper::jsonResponse(true, 'Logged in successfully.', 200, [
-            'user' => $user,
+            'user' => new UserResource($user),
             'token' => $token,
-            'role' => $user->getRoleNames()->first()
         ]);
     }
 
@@ -68,6 +68,6 @@ class AuthController extends Controller
      */
     public function user(Request $request): JsonResponse
     {
-        return Helper::jsonResponse(true, 'User data retrieved successfully.', 200, $request->user());
+        return Helper::jsonResponse(true, 'User data retrieved successfully.', 200, new UserResource($request->user()));
     }
 }

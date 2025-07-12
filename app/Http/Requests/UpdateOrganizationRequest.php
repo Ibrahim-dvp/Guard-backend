@@ -31,7 +31,7 @@ class UpdateOrganizationRequest extends FormRequest
             'code' => ['nullable', 'string', 'max:50', Rule::unique('organizations', 'code')->ignore($organizationId)],
             'address' => ['nullable', 'string'],
             'phone' => ['nullable', 'string', 'max:20'],
-            'email' => ['nullable', 'string', 'email', 'max:255'],
+            'email' => ['sometimes', 'email', 'unique:organizations,email,' . $this->organization->id],
             'logo' => ['nullable', 'string', 'max:255'],
             'settings' => ['nullable', 'json'],
             'status' => ['nullable', 'string', Rule::in(['active', 'inactive', 'suspended'])],

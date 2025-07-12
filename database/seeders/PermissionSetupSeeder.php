@@ -41,6 +41,8 @@ class PermissionSetupSeeder extends Seeder
             'Notification',
             'RevenueTracking',
             'SystemSetting',
+            'User',
+            'Role', // Added for role-specific permissions
         ];
 
         $actions = [

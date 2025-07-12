@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+database_schema.md
+guard_backend_architecture.md
+lead_management_specs.md
+postman_collection.json
